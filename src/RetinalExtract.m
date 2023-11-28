@@ -1,3 +1,8 @@
+%Clear Memory & Command Window
+clc;
+clear all;
+close all;
+
 % Load the image
 image = imread('Input.bmp');
 
@@ -6,6 +11,9 @@ if size(image, 3) == 3
     image = rgb2gray(image);
 end
 
+% Histogram equalization
+image = histeq(image);
+
 % Convert to double
 img = double(image);
 
@@ -13,11 +21,14 @@ img = double(image);
 s = 3; % scale of the filter
 t = 5; % criterion
 L = 1; % length of the neighborhood along the y-axis
+Tc = 0.1; % threshold level
+morph = 1; % param for Morphological opening and closing
 
 % Create the matched filter
 x = -t*s:1:t*s;
 y = -L/2:1:L/2;
 [X, Y] = meshgrid(x, y);
+
 m = (1/(2*t*s))*trapz(x, (1/sqrt(2*pi*s))*exp(-(x.^2)/(2*s^2)));
 f = (1/sqrt(2*pi*s))*exp(-(X.^2)/(2*s^2)) - m;
 
@@ -37,11 +48,15 @@ Dm = imfilter(D, W, 'replicate');
 Dm = Dm / max(Dm(:));
 
 % Set the threshold
-Tc = 3; % threshold level
 T = (1 + mean(Dm(:))) * Tc;
 
 % Threshold the image
 vessels = H > T;
+
+% Morphological post-processing
+se = strel('disk', morph);
+vessels = imopen(vessels, se);
+vessels = imclose(vessels, se);
 
 % Display the extracted vessels
 figure;
