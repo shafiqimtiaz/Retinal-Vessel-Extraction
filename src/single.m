@@ -7,19 +7,17 @@ close all;
 image = imread('Input.bmp');
 
 % Convert to grayscale if necessary
-if size(image, 3) == 3
-    image = rgb2gray(image);
-end
+image = rgb2gray(image);
 
 % Histogram equalization
-img = histeq(image);
+img = adapthisteq(image);
 
 % Define the parameters
-s = 2.5; % scale of the filter
-t = 4.5; % criterion
-L = 2; % length of the neighborhood along the y-axis
-c = 1; % constant for threshold level calculation
-w = 2; % size of the mean filter
+s = 0.5; % scale of the filter
+t = 10; % criterion
+L = s; % length of the neighborhood along the y-axis
+c = 0.5; % constant for threshold level calculation
+w = 3; % size of the mean filter
 se = 1; % param for Morphological opening and closing
 
 % Create the matched filter
@@ -34,12 +32,12 @@ f = (1/sqrt(2*pi*s))*exp(-(X.^2)/(2*s^2)) - m;
 g = (X/(sqrt(2*pi*s^3))).*exp(-(X.^2)/(2*s^2));
 
 % Apply the filters to the image
-H = imfilter(img, f, 'replicate');
-D = imfilter(img, g, 'replicate');
+H = imfilter(img, f, 'symmetric');
+D = imfilter(img, g, 'symmetric');
 
 % Calculate the local mean image of D
 W = ones(w, w) / w^2;
-Dm = imfilter(D, W, 'replicate');
+Dm = imfilter(D, W, 'symmetric');
 
 % Normalize Dm to [0, 1]
 Dm = Dm / max(Dm(:));
@@ -53,9 +51,8 @@ T = (1 + mean(Dm(:))) * Tc;
 vessels = H > T;
 
 % Morphological post-processing
-strucElem = strel('disk', se);
-vessels = imopen(vessels, strucElem);
-vessels = imclose(vessels, strucElem);
+vessels = imopen(vessels,  strel('square', se));
+vessels = imclose(vessels,  strel('disk', se));
 
 % Display the extracted vessels
 figure;
