@@ -18,8 +18,7 @@ w = 3; % size of the mean filter
 se = 1; % param for Morphological opening and closing
 
 % Iterate over s and t
-s_values = 1:0.2:5; % fine tune s scale
-t_values = 2:2:10; % fine tune t criteria
+[s_values, t_values] = fine_tune(1, 0.5, 5, 5, 10);
 % Total number of subplots
 total_plots = length(s_values) * length(t_values);
 % Counter for current subplot
@@ -45,38 +44,15 @@ for i = 1:length(s_values)
     end
 end
 
-%{
-
-% Iterate over s and t
-s_values = 1:0.1:2;
-t_values = 5:1:10;
-% Total number of subplots
-total_plots = length(s_values) * length(t_values);
-% Counter for current subplot
-plot_counter = 1;
-
-for i = 1:length(s_values)
-    for j = 1:length(t_values)
-        s = s_values(i); % scale of the filter
-        t = t_values(j); % criterion
-        L = s; % length of the neighborhood along the y-axis
-
-        % Process the image
-        vessels = process_image(img, s, t, L, c, w, se);
-
-        % Display the extracted vessels
-        figure(2)
-        subplot(ceil(sqrt(total_plots)), ceil(sqrt(total_plots)), plot_counter);
-        imshow(vessels);
-        title(['s = ', num2str(s), ', t = ', num2str(t)]);
-        
-        % Increment plot counter
-        plot_counter = plot_counter + 1;
-    end
+function [s_values, t_values] = fine_tune(start_s, step_s, end_s, start_t, end_t)
+    s_values = start_s:step_s:end_s;
+    num_elements = length(s_values);
+    
+    % Calculate the step size for t_values based on the number of elements in s_values
+    step_t = (end_t - start_t) / (num_elements - 1);
+    
+    t_values = start_t:step_t:end_t;
 end
-
-%}
-
 
 function vessels = process_image(img, s, t, L, c, w, se)
     % Create the matched filter
