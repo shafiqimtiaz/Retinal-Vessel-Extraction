@@ -18,7 +18,7 @@ w = 3; % size of the mean filter
 se = 1; % param for Morphological opening and closing
 
 % Iterate over s and t
-[s_values, t_values] = fine_tune(1, 0.5, 5, 5, 10);
+[s_values, t_values] = fine_tune(0, 0.1, 1, 5, 10);
 % Total number of subplots
 total_plots = length(s_values) * length(t_values);
 % Counter for current subplot
