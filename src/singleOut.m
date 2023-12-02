@@ -4,7 +4,7 @@ clear all;
 close all;
 
 % Load the image
-image = imread('Input.bmp');
+image = imread('images\21_training.tif');
 
 % Convert to grayscale if necessary
 image = rgb2gray(image);
@@ -13,10 +13,11 @@ image = rgb2gray(image);
 img = adapthisteq(image);
 
 % Define the parameters
-s = 0.5; % scale of the filter
-t = 10; % criterion
-L = s; % length of the neighborhood along the y-axis
-c = 0.5; % constant for threshold level calculation
+s = 2.5; % scale of the filter
+t = 7; % criterion
+
+L =  s; % length of the neighborhood along the y-axis
+c = 3; % constant for threshold level calculation
 w = 3; % size of the mean filter
 se = 1; % param for Morphological opening and closing
 
@@ -48,13 +49,17 @@ Tc = c * mH;
 T = (1 + mean(Dm(:))) * Tc;
 
 % Threshold the image
-vessels = H > T;
+vessels_thres = H > T;
 
 % Morphological post-processing
-vessels = imopen(vessels,  strel('square', se));
-vessels = imclose(vessels,  strel('disk', se));
+vessels_morph = imopen(vessels_thres,  strel('disk', se * 2));
+vessels_morph = imclose(vessels_morph,  strel('disk', se));
 
 % Display the extracted vessels
 figure;
-subplot(121);imshow(image);title('Input Image');
-subplot(122);imshow(vessels);title('Extracted Blood Vessels');
+subplot(321);imshow(image);title('Input Image');
+subplot(322);imshow(img);title('Histogram equalized');
+subplot(323);imshow(H);title('Filtered by MF');
+subplot(324);imshow(D);title('Filtered by FDOG');
+subplot(325);imshow(vessels_thres);title('Thresholded');
+subplot(326);imshow(vessels_morph);title('Extracted Blood Vessels');
