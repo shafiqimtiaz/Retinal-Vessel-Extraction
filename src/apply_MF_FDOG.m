@@ -1,8 +1,8 @@
-function vessels = apply_MF_FDOG(img, s, t, L, c, w, se)
+function vessels = apply_MF_FDOG(img, s, t, L, c, w, se, minP)
     % Create the matched filter
     x = -t*s:1:t*s;
     y = -L/2:1:L/2;
-    [X, Y] = meshgrid(x, y);
+    [X, ~] = meshgrid(x, y);
 
     m = (1/(2*t*s))*trapz(x, (1/sqrt(2*pi*s))*exp(-(x.^2)/(2*s^2)));
     f = (1/sqrt(2*pi*s))*exp(-(X.^2)/(2*s^2)) - m;
@@ -41,6 +41,9 @@ function vessels = apply_MF_FDOG(img, s, t, L, c, w, se)
         % Morphological post-processing
         vessels_rot = imopen(vessels_thres,  strel('disk', se));
         vessels_rot = imclose(vessels_rot,  strel('disk', se));
+        
+        % Remove small noise particles
+        vessels_rot = bwareaopen(vessels_rot, minP);
 
         % Combine the results
         vessels = vessels | vessels_rot;
