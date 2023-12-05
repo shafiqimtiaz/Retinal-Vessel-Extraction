@@ -5,6 +5,7 @@ close all;
 
 % Load the image
 image = imread('images\21_training.tif');
+ground_truth = imread('ground_truth\21_training.png');
 
 % Convert to grayscale if necessary
 image = rgb2gray(image);
@@ -57,9 +58,10 @@ vessels_morph = imclose(vessels_morph,  strel('disk', se));
 
 % Display the extracted vessels
 figure;
-subplot(321);imshow(image);title('Input Image');
-subplot(322);imshow(img);title('Histogram equalized');
-subplot(323);imshow(H);title('Filtered by MF');
-subplot(324);imshow(D);title('Filtered by FDOG');
-subplot(325);imshow(vessels_thres);title('Thresholded');
-subplot(326);imshow(vessels_morph);title('Extracted Blood Vessels');
+subplot(421);imshow(image);title('Input Image');
+subplot(422);imshow(img);title('Histogram equalized');
+subplot(423);imshow(H);title('Filtered by MF');
+subplot(424);imshow(D);title('Filtered by FDOG');
+subplot(425);imshow(vessels_thres);title('Thresholded');
+subplot(426);imshow(vessels_morph);title('Extracted Blood Vessels');
+subplot(427); imshow(ground_truth); title('Ground Truth');
