@@ -17,16 +17,15 @@ image = rgb2gray(image);
 % Histogram equalization
 img = adapthisteq(image);
 
-% Core pamameters
+% Core parameters
 t = 3; % criterion
 c = 2.3; % constant for threshold level calculation
 w = 31; % size of the mean filter w x w
 se = 1; % param for Morphological opening and closing
 minP = 50; % Define the minimum particle size
 
-% Param in Paper
-% wide: s = 1.5, L = 9
-% wide: s = 1, L = 5
+% Parameters in Paper
+% wide: s = 1.5, L = 9; thin: s = 1, L = 5;
 
 % Define the parameters for wide vessels
 s = 1.3; % scale of the filter
