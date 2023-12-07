@@ -20,12 +20,12 @@ function vessels = apply_MF_FDOG(img, s, t, L, c, w, se, minP)
         g_rot = imrotate(g, theta, 'bilinear', 'crop');
 
         % Apply the rotated filters to the image
-        H = imfilter(img, f_rot, 'symmetric');
-        D = imfilter(img, g_rot, 'symmetric');
+        H = imfilter(img, f_rot, 'replicate');
+        D = imfilter(img, g_rot, 'replicate');
 
         % Calculate the local mean image of D
         W = ones(w, w) / w^2;
-        Dm = imfilter(D, W, 'symmetric');
+        Dm = imfilter(D, W, 'replicate');
 
         % Normalize Dm to [0, 1]
         Dm = Dm / max(Dm(:));

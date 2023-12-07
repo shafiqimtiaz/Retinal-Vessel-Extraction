@@ -1,5 +1,5 @@
 %Clear Memory & Command Window
-clc; close all;
+clc; clear all; close all;
 
 % image ref from 21 - 40
 imageRef = 21;
